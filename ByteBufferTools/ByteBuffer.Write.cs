@@ -156,7 +156,7 @@ public partial class ByteBuffer
 
     public void WriteString(string value, Encoding encoding, BytePrefix prefix)
     {
-        lock (this)
+        lock (_lock)
         {
             int length = 0;
             byte[] buffer = encoding.GetBytes(value);

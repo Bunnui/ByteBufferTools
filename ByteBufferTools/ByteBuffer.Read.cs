@@ -86,7 +86,7 @@ public partial class ByteBuffer
 
     public string ReadString(BytePrefix prefix, Encoding encoding)
     {
-        lock (this)
+        lock (_lock)
         {
             int length = 0;
             // 写入数据长度前缀信息

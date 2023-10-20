@@ -83,7 +83,7 @@ public partial class ByteBuffer
 
     public string PeekString(BytePrefix prefix, Encoding encoding)
     {
-        lock (this)
+        lock (_lock)
         {
             int prefixLength = 0;
             int stringLength = 0;

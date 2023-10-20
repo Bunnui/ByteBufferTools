@@ -11,6 +11,7 @@ public partial class ByteBuffer
     protected byte[] _buffer;
     protected long _readPosition;
     protected long _writePosition;
+    protected object _lock = new();
 
     public ByteBuffer(byte[]? buffer = null)
     {
@@ -59,7 +60,7 @@ public partial class ByteBuffer
     /// <param name="length">长度</param>
     private void ExtendBufferSize(long length)
     {
-        lock (this)
+        lock (_lock)
         {
             if (length > 0 && _buffer.LongLength < length)
             {
@@ -72,7 +73,7 @@ public partial class ByteBuffer
                 }
                 // 为避免双倍增加的泛滥创建新的缓冲区，新长度到达数组的最大值时
                 // 不在增加双倍，而使用扩展的长度值
-                if (_buffer.LongLength * 2 > Array.MaxLength)
+                if (newLength > Array.MaxLength)
                 {
                     newLength = Math.Max(length, Array.MaxLength);
                 }
@@ -89,7 +90,7 @@ public partial class ByteBuffer
 
     public long Write(byte[] buffer, long offset, long count)
     {
-        lock (this)
+        lock (_lock)
         {
             if (count > 0)
             {
@@ -121,7 +122,7 @@ public partial class ByteBuffer
 
     public long Peek(byte[] buffer, long offset, long count, bool throwException = true)
     {
-        lock (this)
+        lock (_lock)
         {
             if (count > 0)
             {
@@ -149,7 +150,7 @@ public partial class ByteBuffer
 
     public byte[] Peek(long length, bool throwException = true)
     {
-        lock (this)
+        lock (_lock)
         {
             if (length > 0)
             {
@@ -180,7 +181,7 @@ public partial class ByteBuffer
 
     public byte[] Read(long length, bool throwException = true)
     {
-        lock (this)
+        lock (_lock)
         {
             if (length > 0)
             {
